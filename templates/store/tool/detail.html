@@ -1,0 +1,17 @@
+{% extends "store/base.html" %}
+{% load static %}
+
+{% block title %}
+  {{ tool.name }}
+{% endblock %}
+
+{% block content %}
+  <div class="tool-detail">
+    <img src="{% if tool.image %}{{ tool.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}">
+    <h1>{{ tool.name }}</h1>
+    <h3>Имеется в наличии: <a href="{{ tool.keeper.get_absolute_url }}">{{ tool.keeper }}</a></h3>
+    <p class="price">{{ tool.quantity }} шт.</p>
+
+    {{ tool.description|linebreaks }}
+  </div>
+{% endblock %}

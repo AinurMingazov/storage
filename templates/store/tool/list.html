@@ -1,0 +1,41 @@
+{% extends "store/base.html" %}
+{% load static %}
+
+{% block title %}
+  {% if keeper %}{{ keeper.name }}{% else %}Инструменталка{% endif %}
+{% endblock %}
+
+{% block content %}
+  <div id="sidebar">
+    <h3>В наличии</h3>
+
+    <ul>
+{#      <li {% if not keeper %}class="selected"{% endif %}>#}
+{#        <a href="{% url "store:tool_list" %}">All</a>#}
+{#      </li>#}
+        <li>
+          <a href="http://127.0.0.1:8000/centralnyj-sklad/">Центральный склад</a>
+        </li>
+        <br>
+        <p>
+        <br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+
+      {% for k in keepers %}
+        <li {% if keeper.slug == k.slug %}class="selected"{% endif %}>
+          <a href="{{ k.get_absolute_url }}">{{ k.name }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div id="main" class="tool-list">
+    <h1>{% if keeper %}{{ keeper.name }}{% else %}Tools{% endif %}</h1>
+    {% for tool in tools %}
+      <div>
+        <a href="{{ tool.get_absolute_url }}">{{ tool.name }}</a>
+        {{ tool.quantity }} шт. {{ tool.updated }}
+        </div><br>
+    {% endfor %}
+  </div>
+{% endblock %}
