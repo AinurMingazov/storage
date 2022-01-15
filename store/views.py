@@ -1,7 +1,8 @@
-from django.http import HttpResponseRedirect
+from django.contrib import messages
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from .forms import OperationForm
 from .models import Tool, Keeper, Operation
 
@@ -44,6 +45,15 @@ def tool_operation(request, id, slug):
                              price=tool.price, quantity=tool.quantity)
             form_tool.quantity = form.cleaned_data['quantity']
             form_tool.keeper = form.cleaned_data['keeper']
+            if tool.quantity < form_tool.quantity or form_tool.keeper == tool.keeper:
+                # return HttpResponse("Invalid login details supplied.")
+                # messages.error(request, 'Недостаточно инструмента.')
+                return render(request,
+                              'store/tool/operation.html',
+                              {'tool': tool, 'form': form,'quantity':'Недостаточно инструмента.'
+                               })
+
+                # raise ValidationError("Недостаточно инструмента")
             tool.quantity = tool.quantity - form_tool.quantity
 
             try:

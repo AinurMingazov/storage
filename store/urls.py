@@ -9,6 +9,6 @@ urlpatterns = [
          name='tool_list_by_keeper'),
     path('<int:id>/<slug:slug>/', views.tool_detail,
          name='tool_detail'),
-    path('oper/<int:id>/<slug:slug>/', views.tool_operation,
+    path('<int:id>/<slug:slug>/oper/', views.tool_operation,
          name='tool_operation'),
 ]

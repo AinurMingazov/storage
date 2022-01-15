@@ -40,6 +40,9 @@ class Tool(models.Model):
         return reverse('store:tool_detail',
                        args=[self.id, self.slug])
 
+    class Meta:
+        ordering = ('-updated',)
+
 
 class Operation(models.Model):
     giver = models.ForeignKey(Keeper,

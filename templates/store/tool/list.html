@@ -31,11 +31,15 @@
 
   <div id="main" class="tool-list">
     <h1>{% if keeper %}{{ keeper.name }}{% else %}Tools{% endif %}</h1>
+  <table>
+   <tr><th>Наименование</th><th>Кол-во, шт.</th><th>Время изменения</th></tr>
     {% for tool in tools %}
-      <div>
-        <a href="{{ tool.get_absolute_url }}">{{ tool.name }}</a>
-        {{ tool.quantity }} шт. {{ tool.updated }}
-        </div><br>
+      <tr>
+        <td><a href="{{ tool.get_absolute_url }}">{{ tool.name }}</a></td>
+        <td>{{ tool.quantity }}</td>
+        <td>{{ tool.updated }}</td>
+      </tr>
     {% endfor %}
+    </table>
   </div>
 {% endblock %}
