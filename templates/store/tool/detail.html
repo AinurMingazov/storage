@@ -11,6 +11,7 @@
     <h1>{{ tool.name }}</h1>
     <h3>Имеется в наличии: <a href="{{ tool.keeper.get_absolute_url }}">{{ tool.keeper }}</a></h3>
     <p class="price">{{ tool.quantity }} шт.</p>
+    <h3> <a href="{{ tool.keeper.get_absolute_url }}">Передать</a></h3>
 
     {{ tool.description|linebreaks }}
   </div>
