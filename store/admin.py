@@ -1,12 +1,12 @@
 from django.contrib import admin
 
-from store.models import Tool, Keeper, Operation
+from store.models import Tool, Keeper, Operation, Category
 
 
 @admin.register(Tool)
 class ToolAdmin(admin.ModelAdmin):
-    list_display = ['name', 'quantity', 'price', 'keeper', 'slug',
-                    'available', 'created', 'updated']
+    list_display = ['name', 'quantity', 'category', 'keeper',
+                    'available', 'created', 'updated', 'price', 'slug']
     list_filter = ['available', 'created', 'updated']
     list_editable = ['available']
     prepopulated_fields = {'slug': ('name',)}
@@ -14,6 +14,13 @@ class ToolAdmin(admin.ModelAdmin):
 
 @admin.register(Keeper)
 class KeeperAdmin(admin.ModelAdmin):
+    list_display = ['name', 'slug']
+    list_filter = ['name', 'slug']
+    prepopulated_fields = {'slug': ('name',)}
+
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
     list_display = ['name', 'slug']
     list_filter = ['name', 'slug']
     prepopulated_fields = {'slug': ('name',)}

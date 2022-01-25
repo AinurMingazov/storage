@@ -1,17 +1,24 @@
-from django.contrib import messages
-from django.http import HttpResponseRedirect, HttpResponse
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from .forms import OperationForm
-from .models import Tool, Keeper, Operation
+from .models import Tool, Keeper, Operation, Category
 
 
-def tool_list(request, keeper_slug=None):
-    keeper = None
+def tool_list(request, keeper_slug='centralnyj-sklad'):
+
+    category = Category.objects.all()
     keepers = Keeper.objects.all()
     tools = Tool.objects.filter(available=True, quantity__gt=0)
-    if keeper_slug:
+    q = request.GET.getlist('q')
+
+    if q:
+        keeper = get_object_or_404(Keeper, slug=keeper_slug)
+        categories = Category.objects.filter(slug__in=q)
+        tools = tools.filter(keeper=keeper, category__in=categories)
+
+    else:
         keeper = get_object_or_404(Keeper, slug=keeper_slug)
         tools = tools.filter(keeper=keeper)
 
@@ -19,7 +26,10 @@ def tool_list(request, keeper_slug=None):
                   'store/tool/list.html',
                   {'keeper': keeper,
                    'keepers': keepers,
-                   'tools': tools})
+                   'tools': tools,
+                   'category': category,
+                   'query': q,
+                   })
 
 
 def tool_detail(request, id, slug):
@@ -50,7 +60,7 @@ def tool_operation(request, id, slug):
                 # messages.error(request, 'Недостаточно инструмента.')
                 return render(request,
                               'store/tool/operation.html',
-                              {'tool': tool, 'form': form,'quantity':'Недостаточно инструмента.'
+                              {'tool': tool, 'form': form, 'quantity': 'Недостаточно инструмента.'
                                })
 
                 # raise ValidationError("Недостаточно инструмента")

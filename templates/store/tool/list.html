@@ -6,31 +6,35 @@
 {% endblock %}
 
 {% block content %}
-  <div id="sidebar">
-    <h3>В наличии</h3>
-
-    <ul>
-{#      <li {% if not keeper %}class="selected"{% endif %}>#}
-{#        <a href="{% url "store:tool_list" %}">All</a>#}
-{#      </li>#}
+<div id="sidebar">
+<h3>Категории:</h3>
+<form>
+<ul>
+    {% for cat in category %}
         <li>
-          <a href="http://127.0.0.1:8000/centralnyj-sklad/">Центральный склад</a>
+            <input type="checkbox" class="checked" name="q" value="{{ cat.slug }}">
+            <span>{{ cat.name }}</span>
         </li>
-        <br>
-        <p>
-        <br><br><br><br><br><br><br><br><br><br><br><br><br>
+    {% endfor %}
+</ul><br>
+<center><button>Найти</button></center>
+</form><br>
 
+<ul>
+  {% for k in keepers %}
+    <li {% if keeper.slug == k.slug %}class="selected"{% endif %}>
+      <a href="{{ k.get_absolute_url }}">{{ k.name }}</a>
+    </li>
 
-      {% for k in keepers %}
-        <li {% if keeper.slug == k.slug %}class="selected"{% endif %}>
-          <a href="{{ k.get_absolute_url }}">{{ k.name }}</a>
-        </li>
-      {% endfor %}
-    </ul>
+  {% endfor %}
+</ul>
   </div>
 
   <div id="main" class="tool-list">
-    <h1>{% if keeper %}{{ keeper.name }}{% else %}Tools{% endif %}</h1>
+    <h1>{% if keeper %}{{ keeper.name }}{% else %}Инструменты{% endif %}</h1>
+   <h2>{% if category %}{{ category.name }}{% endif %}</h2>
+
+
   <table>
    <tr><th>Наименование</th><th>Кол-во, шт.</th><th>Время изменения</th></tr>
     {% for tool in tools %}
