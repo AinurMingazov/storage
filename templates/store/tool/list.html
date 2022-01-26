@@ -3,6 +3,7 @@
 
 {% block title %}
   {% if keeper %}{{ keeper.name }}{% else %}Инструменталка{% endif %}
+
 {% endblock %}
 
 {% block content %}
@@ -32,6 +33,7 @@
 
   <div id="main" class="tool-list">
     <h1>{% if keeper %}{{ keeper.name }}{% else %}Инструменты{% endif %}</h1>
+  <h3> <a href="operations">Операции</a></h3>
    <h2>{% if category %}{{ category.name }}{% endif %}</h2>
 
 

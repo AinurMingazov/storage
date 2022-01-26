@@ -1,9 +1,21 @@
-
+from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from .forms import OperationForm
 from .models import Tool, Keeper, Operation, Category
+
+
+def keeper_operations(request, keeper_slug=None):
+    keepers = Keeper.objects.all()
+    keeper = get_object_or_404(Keeper, slug=keeper_slug)
+    operations = Operation.objects.filter(Q(taker=keeper) | Q(giver=keeper))
+    return render(request,
+                  'store/tool/operations.html',
+                  {'keeper': keeper,
+                   'keepers': keepers,
+                   'operations': operations,
+                   })
 
 
 def tool_list(request, keeper_slug='centralnyj-sklad'):
@@ -52,7 +64,7 @@ def tool_operation(request, id, slug):
 
         if form.is_valid():
             form_tool = Tool(name=tool.name, keeper=tool.keeper, slug=tool.slug, description=tool.description,
-                             price=tool.price, quantity=tool.quantity)
+                             price=tool.price, quantity=tool.quantity, category=tool.category)
             form_tool.quantity = form.cleaned_data['quantity']
             form_tool.keeper = form.cleaned_data['keeper']
             if tool.quantity < form_tool.quantity or form_tool.keeper == tool.keeper:
@@ -67,11 +79,15 @@ def tool_operation(request, id, slug):
             tool.quantity = tool.quantity - form_tool.quantity
 
             try:
-                t = Tool.objects.get(name=form_tool.name, keeper=form_tool.keeper)
-                print(t.quantity)
+                t = Tool.objects.get(name=form_tool.name, keeper=form_tool.keeper, category=tool.category)
                 t.quantity += form_tool.quantity
                 t.save()
                 tool.save()
+
+                operation = Operation.objects.create(
+                    giver=tool.keeper, taker=form_tool.keeper,
+                    tool=tool, quantity=form_tool.quantity)
+                operation.save()
                 return render(request,
                               'store/tool/detail.html',
                               {'tool': t,
@@ -79,6 +95,10 @@ def tool_operation(request, id, slug):
             except ObjectDoesNotExist:
                 tool.save()
                 form_tool.save()
+                operation = Operation.objects.create(
+                    giver=tool.keeper, taker=form_tool.keeper,
+                    tool=tool, quantity=form_tool.quantity)
+                operation.save()
                 return render(request,
                               'store/tool/detail.html',
                               {'tool': form_tool,
