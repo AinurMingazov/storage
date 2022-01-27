@@ -1,0 +1,40 @@
+{% extends "store/base.html" %}
+{% load static %}
+
+{% block title %}
+  {% if keeper %}{{ keeper.name }}{% else %}Инструменталка{% endif %}
+{% endblock %}
+
+{% block content %}
+<div id="sidebar">
+
+
+<ul>
+  {% for k in keepers %}
+    <li {% if keeper.slug == k.slug %}class="selected"{% endif %}>
+      <a href="{{ k.get_absolute_url }}">{{ k.name }}</a>
+    </li>
+
+  {% endfor %}
+</ul>
+  </div>
+
+  <div id="main" class="tool-list">
+    <h1>{% if keeper %}{{ keeper.name }}{% else %}Инструменты{% endif %}</h1>
+
+
+
+  <table>
+   <tr><th>Принял</th><th>Выдал</th><th>Инструмент</th><th>Кол-во, шт.</th><th>Время изменения</th></tr>
+    {% for operation in operations %}
+      <tr>
+        <td>{{ operation.taker }}</td>
+          <td>{{ operation.giver }}</td>
+          <td>{{ operation.tool }}</td>
+        <td>{{ operation.quantity }}</td>
+        <td>{{ operation.created }}</td>
+      </tr>
+    {% endfor %}
+    </table>
+  </div>
+{% endblock %}
