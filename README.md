@@ -9,7 +9,7 @@
 для его настройки нужно проделать следующие операции.
 
 раскомментируем
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 закоментируем
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static"),]
 
@@ -18,6 +18,6 @@ python manage.py collectstatic
 закоментируем
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 раскомментируем
-# STATICFILES_DIRS = [os.path.join(BASE_DIR, "static"),]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static"),]
 
 P.S. если знаете как сделать проще, направляйте на pull requests
