@@ -10,6 +10,7 @@
 
 раскомментируем
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+
 закоментируем
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static"),]
 
@@ -17,6 +18,8 @@ python manage.py collectstatic
 
 закоментируем
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+
+
 раскомментируем
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static"),]
 
