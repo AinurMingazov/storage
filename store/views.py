@@ -1,12 +1,12 @@
 from django.db.models import Q
-from django.shortcuts import render, get_object_or_404, redirect
-from django.urls import reverse
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.shortcuts import render, get_object_or_404
+from django.core.exceptions import ObjectDoesNotExist
 from .forms import OperationForm
 from .models import Tool, Keeper, Operation, Category
 
 
 def keeper_operations(request, keeper_slug=None):
+    # Функция отображает все операции определенного владельца.
     keepers = Keeper.objects.all()
     keeper = get_object_or_404(Keeper, slug=keeper_slug)
     operations = Operation.objects.filter(Q(taker=keeper) | Q(giver=keeper))
@@ -18,33 +18,8 @@ def keeper_operations(request, keeper_slug=None):
                    })
 
 
-def tool_list(request, keeper_slug='centralnyj-sklad'):
-
-    category = Category.objects.all()
-    keepers = Keeper.objects.all()
-    tools = Tool.objects.filter(available=True, quantity__gt=0)
-    q = request.GET.getlist('q')
-
-    if q:
-        keeper = get_object_or_404(Keeper, slug=keeper_slug)
-        categories = Category.objects.filter(slug__in=q)
-        tools = tools.filter(keeper=keeper, category__in=categories)
-
-    else:
-        keeper = get_object_or_404(Keeper, slug=keeper_slug)
-        tools = tools.filter(keeper=keeper)
-
-    return render(request,
-                  'store/tool/list.html',
-                  {'keeper': keeper,
-                   'keepers': keepers,
-                   'tools': tools,
-                   'category': category,
-                   'query': q,
-                   })
-
-
 def tool_detail(request, id, slug):
+    # Функция отображает подробную информацию о товаре.
     tool = get_object_or_404(Tool,
                              id=id,
                              slug=slug,
@@ -56,7 +31,55 @@ def tool_detail(request, id, slug):
                    })
 
 
+def tool_list(request, keeper_slug=None):
+    # Функция показываем все инструменты по умолчанию,
+    # позволяет настроить фильтр по категориям и/или по владельцам.
+    category = Category.objects.all()
+    keepers = Keeper.objects.all()
+    tools = Tool.objects.filter(available=True, quantity__gt=0)
+    selected_categories = request.GET.getlist('selected_categories')
+
+    if selected_categories:
+        keeper = get_object_or_404(Keeper, slug=keeper_slug)
+        categories = Category.objects.filter(slug__in=q)
+        tools = tools.filter(keeper=keeper, category__in=categories)
+        return render(request,
+                      'store/tool/list.html',
+                      {'keeper': keeper,
+                       'keepers': keepers,
+                       'tools': tools,
+                       'category': category,
+                       'query': selected_categories,
+                       })
+    else:
+
+        if keeper_slug is not None:
+            keeper = get_object_or_404(Keeper, slug=keeper_slug)
+            tools = tools.filter(keeper=keeper)
+
+            return render(request,
+                          'store/tool/list.html',
+                          {'keeper': keeper,
+                           'keepers': keepers,
+                           'tools': tools,
+                           'category': category,
+                           'query': selected_categories,
+                           })
+        else:
+            return render(request,
+                          'store/tool/list.html',
+                          {'keepers': keepers,
+                           'tools': tools,
+                           'category': category,
+                           'query': selected_categories,
+                           })
+
+
 def tool_operation(request, id, slug):
+    # Функция отображает форму передачи инструмента.
+    # При получении POST запроса, проверяет наличие товара у получающего владельца,
+    # если есть добавляет в количество, если нет то создает.
+
     tool = get_object_or_404(Tool, id=id)
 
     if request.method == "POST":
@@ -68,14 +91,13 @@ def tool_operation(request, id, slug):
             form_tool.quantity = form.cleaned_data['quantity']
             form_tool.keeper = form.cleaned_data['keeper']
             if tool.quantity < form_tool.quantity or form_tool.keeper == tool.keeper:
-                # return HttpResponse("Invalid login details supplied.")
-                # messages.error(request, 'Недостаточно инструмента.')
+                # Проверка передачи инструмента более чем есть в наличии и передачи владельцом самому
+                # себе. Передача не выполняется и возвращается страница формы.
                 return render(request,
                               'store/tool/operation.html',
                               {'tool': tool, 'form': form, 'quantity': 'Недостаточно инструмента.'
                                })
 
-                # raise ValidationError("Недостаточно инструмента")
             tool.quantity = tool.quantity - form_tool.quantity
 
             try:
