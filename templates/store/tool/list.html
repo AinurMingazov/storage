@@ -1,26 +1,25 @@
 {% extends "store/base.html" %}
 {% load static %}
-
 {% block title %}
-  {% if keeper %}{{ keeper.name }}{% else %}Инструменталка{% endif %}
-
+{% if keeper %}{{ keeper.name }}{% else %}Инструменталка{% endif %}
 {% endblock %}
 
 {% block content %}
 <div id="sidebar">
 <h3>Категории:</h3>
 <form>
+<!--    Выбор категорий-->
 <ul>
     {% for cat in category %}
         <li>
-            <input type="checkbox" class="checked" name="q" value="{{ cat.slug }}">
+            <input type="checkbox" class="checked" name="selected_categories" value="{{ cat.slug }}">
             <span>{{ cat.name }}</span>
         </li>
     {% endfor %}
 </ul><br>
 <center><button>Найти</button></center>
 </form><br>
-
+<!--Отображение владельцев-->
 <ul>
   {% for k in keepers %}
     <li {% if keeper.slug == k.slug %}class="selected"{% endif %}>
@@ -30,13 +29,10 @@
   {% endfor %}
 </ul>
   </div>
-
+<!--Отображение товаров-->
   <div id="main" class="tool-list">
     <h1>{% if keeper %}{{ keeper.name }}{% else %}Инструменты{% endif %}</h1>
-  <h3> <a href="operations">Операции</a></h3>
-   <h2>{% if category %}{{ category.name }}{% endif %}</h2>
-
-
+       <h3> <a href="operations">Операции</a></h3>
   <table>
    <tr><th>Наименование</th><th>Кол-во, шт.</th><th>Время изменения</th></tr>
     {% for tool in tools %}
