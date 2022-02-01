@@ -6,7 +6,7 @@ from .models import Tool, Keeper, Operation, Category
 
 
 def keeper_operations(request, keeper_slug=None):
-    # Функция отображает все операции определенного владельца.
+    """Функция отображает все операции определенного владельца."""
     keepers = Keeper.objects.all()
     keeper = get_object_or_404(Keeper, slug=keeper_slug)
     operations = Operation.objects.filter(Q(taker=keeper) | Q(giver=keeper))
@@ -19,7 +19,7 @@ def keeper_operations(request, keeper_slug=None):
 
 
 def tool_detail(request, id, slug):
-    # Функция отображает подробную информацию о товаре.
+    """Функция отображает подробную информацию о товаре."""
     tool = get_object_or_404(Tool,
                              id=id,
                              slug=slug,
@@ -32,8 +32,8 @@ def tool_detail(request, id, slug):
 
 
 def tool_list(request, keeper_slug=None):
-    # Функция показываем все инструменты по умолчанию,
-    # позволяет настроить фильтр по категориям и/или по владельцам.
+    """Функция показываем все инструменты по умолчанию,
+    позволяет настроить фильтр по категориям и/или по владельцам."""
     category = Category.objects.all()
     keepers = Keeper.objects.all()
     tools = Tool.objects.filter(available=True, quantity__gt=0)
@@ -76,9 +76,9 @@ def tool_list(request, keeper_slug=None):
 
 
 def tool_operation(request, id, slug):
-    # Функция отображает форму передачи инструмента.
-    # При получении POST запроса, проверяет наличие товара у получающего владельца,
-    # если есть добавляет в количество, если нет то создает.
+    """Функция отображает форму передачи инструмента.
+    При получении POST запроса, проверяет наличие товара у получающего владельца,
+    если есть добавляет в количество, если нет то создает."""
 
     tool = get_object_or_404(Tool, id=id)
 
