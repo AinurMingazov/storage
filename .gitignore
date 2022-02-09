@@ -59,7 +59,7 @@ venv.bak/
 
 django/*
 db.sqlite3
-**/migrations/**
+migrations/**initial**
 **pycache**
 
 */prod_settings.py
