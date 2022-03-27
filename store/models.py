@@ -41,7 +41,9 @@ class Category(models.Model):
 class Tool(models.Model):
     """Модель описывает товар"""
     name = models.CharField(max_length=200)
-    slug = models.SlugField(max_length=200, unique=True)
+    slug = models.SlugField(max_length=200,
+                            # unique=True
+                            )
     image = models.ImageField(upload_to='tools/%Y/%m/%d',
                               blank=True)
     keeper = models.ForeignKey(Keeper, on_delete=models.SET_NULL,

@@ -61,8 +61,3 @@ django/*
 db.sqlite3
 migrations/**initial**
 **pycache**
-
-*/prod_settings.py
-*/local_settings.py
-
-setup.txt

@@ -41,7 +41,7 @@ def tool_list(request, keeper_slug=None):
 
     if selected_categories:
         keeper = get_object_or_404(Keeper, slug=keeper_slug)
-        categories = Category.objects.filter(slug__in=q)
+        categories = Category.objects.filter(slug__in=selected_categories)
         tools = tools.filter(keeper=keeper, category__in=categories)
         return render(request,
                       'store/tool/list.html',
@@ -49,7 +49,8 @@ def tool_list(request, keeper_slug=None):
                        'keepers': keepers,
                        'tools': tools,
                        'category': category,
-                       'query': selected_categories,
+                       'selected_categories': selected_categories,
+                       'categories': categories
                        })
     else:
 
@@ -90,18 +91,26 @@ def tool_operation(request, id, slug):
                              price=tool.price, quantity=tool.quantity, category=tool.category)
             form_tool.quantity = form.cleaned_data['quantity']
             form_tool.keeper = form.cleaned_data['keeper']
-            if tool.quantity < form_tool.quantity or form_tool.keeper == tool.keeper:
-                # Проверка передачи инструмента более чем есть в наличии и передачи владельцом самому
-                # себе. Передача не выполняется и возвращается страница формы.
+            # Проверка передачи инструмента более чем есть в наличии и передачи владельцом самому
+            # себе. Передача не выполняется и возвращается страница формы.
+            if tool.quantity < form_tool.quantity:
+                form.add_error(None, "Недостаточно инструмента для передачи")
                 return render(request,
                               'store/tool/operation.html',
-                              {'tool': tool, 'form': form, 'quantity': 'Недостаточно инструмента.'
-                               })
+                              {'tool': tool, 'form': form})
+            if form_tool.keeper == tool.keeper:
+                form.add_error(None, "Производится передача инструмента самому владельцу")
+                return render(request,
+                              'store/tool/operation.html',
+                              {'tool': tool, 'form': form})
 
             tool.quantity = tool.quantity - form_tool.quantity
 
             try:
-                t = Tool.objects.get(name=form_tool.name, keeper=form_tool.keeper, category=tool.category)
+                t = Tool.objects.get(
+                    name=form_tool.name,
+                    keeper=form_tool.keeper,
+                    category=tool.category)
                 t.quantity += form_tool.quantity
                 t.save()
                 tool.save()
