@@ -1,9 +1,22 @@
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
-from .forms import OperationForm
-from .models import Tool, Keeper, Operation, Category
+from django.views.generic import ListView, DetailView
 
+from .forms import OperationForm
+from .models import *
+
+
+# class KeeperOperations(ListView):
+#     """Класс описывает операции владельца инструментов"""
+#     model = Operation
+#     template_name = 'store/tool/operations.html'
+#     context_object_name = 'operations'
+#
+#     def get_context_data(self, *, object_list=None, **kwargs):
+#         pass
+#     def get_queryset(self, keeper):
+#         return Operation.objects.filter(Q(taker=keeper) | Q(giver=keeper))
 
 def keeper_operations(request, keeper_slug=None):
     """Функция отображает все операции определенного владельца."""
@@ -18,17 +31,40 @@ def keeper_operations(request, keeper_slug=None):
                    })
 
 
-def tool_detail(request, id, slug):
-    """Функция отображает подробную информацию о товаре."""
-    tool = get_object_or_404(Tool,
-                             id=id,
-                             slug=slug,
-                             available=True)
+class ToolDetail(DetailView):
+    """Класс описывает инструмент"""
+    model = Tool
+    template_name = 'store/tool/detail.html'
+    context_object_name = 'tool'
+    pk_url_kwarg = 'pk'
 
-    return render(request,
-                  'store/tool/detail.html',
-                  {'tool': tool,
-                   })
+    def get_queryset(self):
+        return Tool.objects.filter(pk=self.kwargs['pk'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['category'] = Category.objects.all()
+        context['keepers'] = Keeper.objects.all()
+        return context
+
+
+class ToollList(ListView):
+    """Класс описывает список инструментов"""
+    model = Tool
+    template_name = 'store/tool/list.html'
+    context_object_name = 'tools'
+    allow_empty = False
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['category'] = Category.objects.all()
+        context['keepers'] = Keeper.objects.all()
+        context['keeper'] = self.keeper
+        return context
+
+    def get_queryset(self):
+        self.keeper = get_object_or_404(Keeper, slug=self.args['keeper_slug'])
+        return Tool.objects.filter(keeper=self.keeper, quantity__gt=0, available=True,)
 
 
 def tool_list(request, keeper_slug=None):
@@ -76,7 +112,7 @@ def tool_list(request, keeper_slug=None):
                            })
 
 
-def tool_operation(request, id, slug):
+def tool_operation(request, id):
     """Функция отображает форму передачи инструмента.
     При получении POST запроса, проверяет наличие товара у получающего владельца,
     если есть добавляет в количество, если нет то создает."""
@@ -87,7 +123,7 @@ def tool_operation(request, id, slug):
         form = OperationForm(request.POST)
 
         if form.is_valid():
-            form_tool = Tool(name=tool.name, keeper=tool.keeper, slug=tool.slug, description=tool.description,
+            form_tool = Tool(name=tool.name, keeper=tool.keeper, description=tool.description,
                              price=tool.price, quantity=tool.quantity, category=tool.category)
             form_tool.quantity = form.cleaned_data['quantity']
             form_tool.keeper = form.cleaned_data['keeper']
@@ -134,10 +170,8 @@ def tool_operation(request, id, slug):
                               'store/tool/detail.html',
                               {'tool': form_tool,
                                })
-
     else:
         form = OperationForm()
-
     return render(request,
                   'store/tool/operation.html',
                   {'tool': tool, 'form': form,

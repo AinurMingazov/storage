@@ -43,6 +43,7 @@
   <table>
    <tr><th>Наименование</th><th>Кол-во, шт.</th><th>Время изменения</th></tr>
     {% for tool in tools %}
+
       <tr>
         <td><a href="{{ tool.get_absolute_url }}">{{ tool.name }}</a></td>
         <td>{{ tool.quantity }}</td>
