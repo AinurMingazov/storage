@@ -20,7 +20,9 @@
   </div>
 
   <div id="main" class="tool-list">
-    <h1>{% if keeper %}{{ keeper.name }}{% else %}Инструменты{% endif %}</h1>
+    <h1>{% if keeper %}
+          Операции {{ keeper.name }}
+        {% endif %}</h1>
 
 
 

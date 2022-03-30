@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
@@ -7,28 +8,23 @@ from .forms import OperationForm
 from .models import *
 
 
-# class KeeperOperations(ListView):
-#     """Класс описывает операции владельца инструментов"""
-#     model = Operation
-#     template_name = 'store/tool/operations.html'
-#     context_object_name = 'operations'
-#
-#     def get_context_data(self, *, object_list=None, **kwargs):
-#         pass
-#     def get_queryset(self, keeper):
-#         return Operation.objects.filter(Q(taker=keeper) | Q(giver=keeper))
+class KeeperOperations(LoginRequiredMixin,ListView):
+    """Класс описывает операции владельца инструментов"""
+    model = Operation
+    print(model)
+    template_name = 'store/tool/operations.html'
+    context_object_name = 'operations'
+    slug_url_kwarg = 'keeper_slug'
 
-def keeper_operations(request, keeper_slug=None):
-    """Функция отображает все операции определенного владельца."""
-    keepers = Keeper.objects.all()
-    keeper = get_object_or_404(Keeper, slug=keeper_slug)
-    operations = Operation.objects.filter(Q(taker=keeper) | Q(giver=keeper))
-    return render(request,
-                  'store/tool/operations.html',
-                  {'keeper': keeper,
-                   'keepers': keepers,
-                   'operations': operations,
-                   })
+    def get_context_data(self, keeper_slug=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['keepers'] = Keeper.objects.all()
+        context['keeper'] = Keeper.objects.filter(slug=self.kwargs['keeper_slug'])[0]
+        return context
+
+    def get_queryset(self):
+        return Operation.objects.filter(
+            Q(taker__slug=self.kwargs['keeper_slug']) | Q(giver__slug=self.kwargs['keeper_slug']))
 
 
 class ToolDetail(DetailView):
