@@ -61,8 +61,7 @@ class Tool(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('store:tool_detail',
-                       args=[self.id, self.slug])
+        return reverse('store:tool_detail', kwargs={'pk': self.pk})
 
     class Meta:
         ordering = ('name',)

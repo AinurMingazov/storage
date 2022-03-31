@@ -39,10 +39,12 @@
           {% endfor %}
       {% endif %}
 
-       <h3> <a href="operations">Операции</a></h3>
+       <h3> {% if keeper %}<a href="{% url 'store:keeper_operations_list' keeper.slug %}">Операции</a></h3>
+      {% endif %}
   <table>
    <tr><th>Наименование</th><th>Кол-во, шт.</th><th>Время изменения</th></tr>
     {% for tool in tools %}
+
       <tr>
         <td><a href="{{ tool.get_absolute_url }}">{{ tool.name }}</a></td>
         <td>{{ tool.quantity }}</td>
