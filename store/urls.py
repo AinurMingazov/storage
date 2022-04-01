@@ -9,4 +9,7 @@ urlpatterns = [
     path('operations/<slug:keeper_slug>/', KeeperOperations.as_view(), name='keeper_operations_list'),
     path('tool/<int:pk>/', ToolDetail.as_view(), name='tool_detail'),
     path('oper/<int:id>/', tool_operation, name='tool_operation'),
+    path('register/', RegisterUser.as_view(), name='register'),
+    # path('login/', login, name='login'),
+
 ]

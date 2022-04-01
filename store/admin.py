@@ -11,7 +11,7 @@ class ToolResource(resources.ModelResource):
     class Meta:
         model = Tool
         fields = ('id', 'name', 'quantity', 'category', 'keeper',
-                    'available', 'price', 'slug')
+                    'available', 'price')
 
 
 class ToolAdmin(ImportExportActionModelAdmin):

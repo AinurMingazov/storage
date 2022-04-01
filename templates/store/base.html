@@ -12,6 +12,8 @@
   </div>
   <div id="subheader">
     <div class="cart">
+      <a href="{% url 'store:reqister' %}">Регистация</a> |
+
 {#      {% with total_items=cart|length %}#}
 {#          {% if cart|length > 0 %}#}
 {#            Your cart:#}
@@ -26,8 +28,30 @@
     </div>
   </div>
   <div id="content">
+
     {% block content %}
     {% endblock %}
-  </div>
+     </div>
+{% if page_obj.has_other_pages %}
+  <br><br>
+<center><table>
+  {% if page_obj.has_previous %}
+  <tr><a href="?page={{ page_obj.previous_page_number }}">  &lt;  </a> - </tr>
+  {% endif %}
+  {% for p in paginator.page_range %}
+<!--  <li class="hage-num">-->
+  {% if page_obj.number == p %}
+  <tr> - <b>  {{ p }}  </b> - </tr>
+  {% elif p >= page_obj.number|add:-1 and p <= page_obj.number|add:1%}
+   <tr> - <a href="?page={{ p }}">  {{ p }}  </a> - </tr>
+<!--  </li>-->
+  {% endif %}
+  {% endfor %}
+  {% if page_obj.has_next %}
+  <tr> - <a href="?page={{ page_obj.next_page_number }}">  &gt;  </a>  </tr>
+  {% endif %}
+  {% endif %}
+</table></center>
+
 </body>
 </html>

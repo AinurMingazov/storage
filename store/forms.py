@@ -23,3 +23,5 @@ class OperationForm(forms.ModelForm):
         if len(str(keeper)) > 200:
             raise ValidationError('Длина первышает 200 символов')
         return keeper
+
+class RegisterUserForm(UserCreationForm)

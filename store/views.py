@@ -1,15 +1,18 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.forms import UserCreationForm
+from django.urls import reverse_lazy
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView
 
 from .forms import OperationForm
 from .models import *
 
 
-class KeeperOperations(LoginRequiredMixin,ListView):
+class KeeperOperations(LoginRequiredMixin, ListView):
     """Класс описывает операции владельца инструментов"""
+    paginate_by = 2
     model = Operation
     print(model)
     template_name = 'store/tool/operations.html'
@@ -46,6 +49,7 @@ class ToolDetail(DetailView):
 
 class ToollList(ListView):
     """Класс описывает список инструментов"""
+    paginate_by = 3
     model = Tool
     template_name = 'store/tool/list.html'
     context_object_name = 'tools'
@@ -61,6 +65,16 @@ class ToollList(ListView):
     def get_queryset(self):
         self.keeper = get_object_or_404(Keeper, slug=self.args['keeper_slug'])
         return Tool.objects.filter(keeper=self.keeper, quantity__gt=0, available=True,)
+
+
+class RegisterUser(CreateView):
+    form_class = UserCreationForm
+    template_name = 'store/tool/register.html'
+    success_url = reverse_lazy('login')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
 
 
 def tool_list(request, keeper_slug=None):
@@ -125,7 +139,7 @@ def tool_operation(request, id):
             form_tool.keeper = form.cleaned_data['keeper']
             # Проверка передачи инструмента более чем есть в наличии и передачи владельцом самому
             # себе. Передача не выполняется и возвращается страница формы.
-            if tool.quantity < form_tool.quantity:
+            if tool.quantity < form_tool.quantity or form_tool.quantity == 0:
                 form.add_error(None, "Недостаточно инструмента для передачи")
                 return render(request,
                               'store/tool/operation.html',
