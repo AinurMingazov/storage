@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'store.apps.StoreConfig',
     'debug_toolbar',
+    'captcha',
     'import_export',
 ]
 

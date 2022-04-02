@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .models import Tool
-
+from captcha.fields import CaptchaField
 
 class OperationForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -46,3 +46,4 @@ class ContactForm(forms.Form):
     username = forms.CharField(label='Имя', max_length=255)
     email = forms.EmailField(label='Email')
     content = forms.CharField(widget=forms.Textarea(attrs={'cols': 60, 'row': 10}))
+    captcha = CaptchaField()
