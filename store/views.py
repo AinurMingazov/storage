@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.exceptions import ObjectDoesNotExist
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, FormView
 
 from .forms import *
 from .models import *
@@ -94,6 +94,20 @@ class LoginUser(LoginView):
 
     def get_success_url(self):
         return reverse_lazy('store:tool_list')
+
+
+class ContactFormView(FormView):
+    form_class = ContactForm
+    template_name = 'store/tool/contact.html'
+    success_url = reverse_lazy('store:login')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+    def form_valid(self, form):
+        print(form.cleaned_data)
+        return redirect('store:tool_list')
 
 
 def logout_user(request):
