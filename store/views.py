@@ -1,18 +1,19 @@
+from django.contrib.auth import logout, login
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
 from django.db.models import Q
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.generic import ListView, DetailView, CreateView
 
-from .forms import OperationForm
+from .forms import *
 from .models import *
 
 
 class KeeperOperations(LoginRequiredMixin, ListView):
     """Класс описывает операции владельца инструментов"""
-    paginate_by = 2
+    paginate_by = 20
     model = Operation
     print(model)
     template_name = 'store/tool/operations.html'
@@ -27,7 +28,8 @@ class KeeperOperations(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Operation.objects.filter(
-            Q(taker__slug=self.kwargs['keeper_slug']) | Q(giver__slug=self.kwargs['keeper_slug']))
+            Q(taker__slug=self.kwargs['keeper_slug']) |
+            Q(giver__slug=self.kwargs['keeper_slug'])).select_related('giver', 'taker', 'tool')
 
 
 class ToolDetail(DetailView):
@@ -38,7 +40,8 @@ class ToolDetail(DetailView):
     pk_url_kwarg = 'pk'
 
     def get_queryset(self):
-        return Tool.objects.filter(pk=self.kwargs['pk'])
+        return Tool.objects.filter(pk=self.kwargs['pk']).select_related('keeper')
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -63,18 +66,39 @@ class ToollList(ListView):
         return context
 
     def get_queryset(self):
-        self.keeper = get_object_or_404(Keeper, slug=self.args['keeper_slug'])
         return Tool.objects.filter(keeper=self.keeper, quantity__gt=0, available=True,)
 
 
 class RegisterUser(CreateView):
-    form_class = UserCreationForm
+    form_class = RegisterUserForm
     template_name = 'store/tool/register.html'
-    success_url = reverse_lazy('login')
+    success_url = reverse_lazy('store:login')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         return context
+
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)
+        return redirect('store:tool_list')
+
+
+class LoginUser(LoginView):
+    form_class = LoginUserForm
+    template_name = 'store/tool/login.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy('store:tool_list')
+
+
+def logout_user(request):
+    logout(request)
+    return redirect('store:login')
 
 
 def tool_list(request, keeper_slug=None):
