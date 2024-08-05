@@ -1,0 +1,26 @@
+
+version : '3'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: .env
+    depends_on:
+      - db
+    ports:
+      - "8080:8000"
+    volumes:
+      - ./:/web/
+
+
+  db:
+    image: postgres:16.3-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=${STORAGE_PG_USER}
+      - POSTGRES_PASSWORD=${STORAGE_PG_PASSWORD}
+      - POSTGRES_DB=${STORAGE_PG_DB}
+    ports:
+      - "5678:5432"
