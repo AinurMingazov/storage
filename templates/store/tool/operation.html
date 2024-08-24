@@ -15,7 +15,6 @@
     <form action="" method="post">
         {% csrf_token %}
         <table>
-<!--        {{ form }}-->
 
 {% for f in form %}
 <p><label class="form-label" for="{{ f.id_for_label }}">{{f.label}}: </label>{{ f }}</p>

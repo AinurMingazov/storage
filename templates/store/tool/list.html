@@ -21,6 +21,7 @@
 <center><button>Найти</button></center>
 </form><br>
 <!--Отображение владельцев-->
+<h3>Владельцы:</h3>
 <ul>
   {% for k in keepers %}
     <li {% if keeper.slug == k.slug %}class="selected"{% endif %}>

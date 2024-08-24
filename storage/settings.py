@@ -59,11 +59,11 @@ WSGI_APPLICATION = 'storage.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv("STORAGE_PG_DB", ""),
-        'USER': os.getenv("STORAGE_PG_USER", ""),
-        'PASSWORD': os.getenv("STORAGE_PG_PASSWORD", ""),
-        'HOST': os.getenv("STORAGE_PG_HOST", ""),
-        'PORT': int(os.getenv("STORAGE_PG_PORT", "")),
+        'NAME': os.getenv("POSTGRES_DB", ""),
+        'USER': os.getenv("POSTGRES_USER", ""),
+        'PASSWORD': os.getenv("POSTGRES_PASSWORD", ""),
+        'HOST': os.getenv("POSTGRES_HOST", ""),
+        'PORT': int(os.getenv("POSTGRES_PORT", "")),
     }
 }
 

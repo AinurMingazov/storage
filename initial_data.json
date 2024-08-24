@@ -1,0 +1,130 @@
+[
+  {
+    "model": "store.keeper",
+    "pk": 1,
+    "fields": {
+      "name": "Склад",
+      "slug": "sklad"
+    }
+  },
+  {
+    "model": "store.keeper",
+    "pk": 2,
+    "fields": {
+      "name": "Семен Семенов",
+      "slug": "semen-semenov"
+    }
+  },
+   {
+    "model": "store.keeper",
+    "pk": 3,
+    "fields": {
+      "name": "Иван Иванов",
+      "slug": "ivan-ivanov"
+    }
+  },
+    {
+    "model": "store.keeper",
+    "pk": 4,
+    "fields": {
+      "name": "Алексей Алексеев",
+      "slug": "aleksey-alekseev"
+    }
+  },
+    {
+    "model": "store.keeper",
+    "pk": 5,
+    "fields": {
+      "name": "Петр Петров",
+      "slug": "petr-petrov"
+    }
+  },
+    {
+    "model": "store.keeper",
+    "pk": 6,
+    "fields": {
+      "name": "Анна Антонова",
+      "slug": "anna-antonova"
+    }
+  },
+    {
+    "model": "store.keeper",
+    "pk": 7,
+    "fields": {
+      "name": "Михаил Михайлов",
+      "slug": "mikhail-mikhaylov"
+    }
+  },
+    {
+    "model": "store.keeper",
+    "pk": 8,
+    "fields": {
+      "name": "Василий Васильев",
+      "slug": "vasiliy-vasilyev"
+    }
+  },
+    {
+    "model": "store.keeper",
+    "pk": 9,
+    "fields": {
+      "name": "Сергей Сергеев",
+      "slug": "sergey-sergeev"
+    }
+  },
+  {
+    "model": "store.keeper",
+    "pk": 10,
+    "fields": {
+      "name": "Александр Александров",
+      "slug": "alexandr-alexandrov"
+    }
+  },
+  {
+    "model": "store.category",
+    "pk": 1,
+    "fields": {
+      "name": "Токарные пластины",
+      "slug": "tokarnye-plastiny"
+    }
+  },
+  {
+    "model": "store.category",
+    "pk": 2,
+    "fields": {
+      "name": "Фрезерные пластины",
+      "slug": "furniture-plastiny"
+    }
+  },
+  {
+    "model": "store.tool",
+    "pk": 1,
+    "fields": {
+      "name": "WNMG080404-GM IP4325",
+      "image": "",
+      "keeper": 1,
+      "category": 1,
+      "quantity": 100,
+      "description": "Бренд Intool",
+      "price": "404.00",
+      "available": true,
+      "created": "2023-01-01T00:00:00Z",
+      "updated": "2023-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "store.tool",
+    "pk": 2,
+    "fields": {
+      "name": "WNMG080408-CQ LF9218",
+      "image": "",
+      "keeper": 1,
+      "category": 1,
+      "quantity": 70,
+      "description": "Бренд Deskar",
+      "price": "362.00",
+      "available": true,
+      "created": "2023-01-01T00:00:00Z",
+      "updated": "2023-01-01T00:00:00Z"
+    }
+  }
+]
