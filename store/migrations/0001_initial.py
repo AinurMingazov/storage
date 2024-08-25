@@ -5,72 +5,96 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Category',
+            name="Category",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=40)),
-                ('slug', models.SlugField(null=True, unique=True)),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("name", models.CharField(max_length=40)),
+                ("slug", models.SlugField(null=True, unique=True)),
             ],
             options={
-                'verbose_name': 'category',
-                'verbose_name_plural': 'categories',
-                'ordering': ('name',),
+                "verbose_name": "category",
+                "verbose_name_plural": "categories",
+                "ordering": ("name",),
             },
         ),
         migrations.CreateModel(
-            name='Keeper',
+            name="Keeper",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=40)),
-                ('slug', models.SlugField(null=True, unique=True)),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("name", models.CharField(max_length=40)),
+                ("slug", models.SlugField(null=True, unique=True)),
             ],
             options={
-                'verbose_name': 'keeper',
-                'verbose_name_plural': 'keepers',
-                'ordering': ('name',),
+                "verbose_name": "keeper",
+                "verbose_name_plural": "keepers",
+                "ordering": ("name",),
             },
         ),
         migrations.CreateModel(
-            name='Tool',
+            name="Tool",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=200)),
-                ('image', models.ImageField(blank=True, upload_to='tools/%Y/%m/%d')),
-                ('quantity', models.PositiveIntegerField(default=0)),
-                ('description', models.TextField(blank=True)),
-                ('price', models.DecimalField(blank=True, decimal_places=2, max_digits=10)),
-                ('available', models.BooleanField(default=True)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('category', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='category', to='store.category')),
-                ('keeper', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='keeper', to='store.keeper')),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("name", models.CharField(max_length=200)),
+                ("image", models.ImageField(blank=True, upload_to="tools/%Y/%m/%d")),
+                ("quantity", models.PositiveIntegerField(default=0)),
+                ("description", models.TextField(blank=True)),
+                ("price", models.DecimalField(blank=True, decimal_places=2, max_digits=10)),
+                ("available", models.BooleanField(default=True)),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("updated", models.DateTimeField(auto_now=True)),
+                (
+                    "category",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="category",
+                        to="store.category",
+                    ),
+                ),
+                (
+                    "keeper",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="keeper",
+                        to="store.keeper",
+                    ),
+                ),
             ],
             options={
-                'ordering': ('name',),
+                "ordering": ("name",),
             },
         ),
         migrations.CreateModel(
-            name='Operation',
+            name="Operation",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('quantity', models.PositiveIntegerField(default=0)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('giver', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='giver', to='store.keeper')),
-                ('taker', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='taker', to='store.keeper')),
-                ('tool', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='store.tool')),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("quantity", models.PositiveIntegerField(default=0)),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                (
+                    "giver",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, related_name="giver", to="store.keeper"
+                    ),
+                ),
+                (
+                    "taker",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, related_name="taker", to="store.keeper"
+                    ),
+                ),
+                ("tool", models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="store.tool")),
             ],
             options={
-                'verbose_name': 'operation',
-                'verbose_name_plural': 'operations',
-                'ordering': ('-created',),
+                "verbose_name": "operation",
+                "verbose_name_plural": "operations",
+                "ordering": ("-created",),
             },
         ),
     ]
