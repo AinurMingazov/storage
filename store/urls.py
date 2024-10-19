@@ -1,7 +1,6 @@
 from django.urls import path
 
-from store.views import (KeeperOperations, LoginUser, RegisterUser, ToolDetail,
-                         logout_user, tool_list, tool_operation)
+from store.views import KeeperOperations, LoginUser, RegisterUser, ToolDetail, logout_user, tool_list, tool_operation
 
 app_name = "store"
 
